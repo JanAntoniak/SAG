@@ -1,17 +1,7 @@
 {% extends "base.html" %}
 {% block base %}
 <script>
-    $(function () {
-        $(document).tooltip({
-            items: "[title]",
-            content: function () {
-                var element = $(this);
-                if (element.is("[title]")) {
-                    return element.attr("title");
-                }
-            }
-        });
-    });
+    $(".offer-image").tooltip();
 </script>
 <div class="product-container well well-lg">
     <div>
