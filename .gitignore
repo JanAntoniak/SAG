@@ -2,6 +2,7 @@
 project
 target
 GearbestScraper/html/
-GearbestScraper/venv/
+venv/
+Gui/logs
+GearbestScraper/products_urls
 !**/.gitkeep
-

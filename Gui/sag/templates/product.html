@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block base %}
+<script>
+    $(".offer-image").tooltip();
+</script>
+<div class="product-container well well-lg">
+    <div>
+        <img class="product-image" src="{{ product.image_url }}" align="left">
+        <h1>{{ product.name }}</h1>
+        <p>{{ product.description }}</p>
+    </div>
+    <div class="offers-container">
+        <h4>You may also like:</h4>
+        <div>
+            {% for offer in offers %}
+            <a href="{{ offer._id }}" title="{{ offer.description }}">
+                <img class="offer-image" src="{{ offer.image_url }}">
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+

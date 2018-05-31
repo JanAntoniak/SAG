@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block base %}
+<div class="row">
+    <div class="error_container text-center">
+        <img class="error_image" src="{{ url_for('static', filename='images/error.jpg') }}" alt="error">
+        <div class="error_text">
+            <p>{{ error.value }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

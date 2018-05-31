@@ -1,0 +1,16 @@
+{% macro search_bar(search_value='', size='md') %}
+<div>
+    <form action="search">
+        <div class="form-group">
+            <div class="input-group">
+                <input name='q' class="form-control input-{{ size }}" placeholder="Search" value="{{ search_value }}">
+                <span class="input-group-btn">
+                  <button class="btn btn-primary btn-{{ size }}">
+                      <span class="glyphicon glyphicon-search"></span>
+                  </button>
+                </span>
+            </div>
+        </div>
+    </form>
+</div>
+{% endmacro %}

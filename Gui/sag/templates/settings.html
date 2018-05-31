@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block base %}
+<form method="post">
+    {{ form.hidden_tag() }}
+
+    <div class="well well-lg">
+        <div class="form-group">
+            {{ form.num.label }}
+            <div>{{ form.num(class="slider", **{'data-slider-value':num}) }}</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="form-group col-sm-2 col-xs-6">
+            {{ form.save(class="btn btn-primary btn-md btn-block", value="Save") }}
+        </div>
+        <div class="form-group col-sm-2 col-xs-6">
+            <a href="/" class="btn btn-danger btn-block">Cancel</a>
+        </div>
+    </div>
+</form>
+{% endblock %}
