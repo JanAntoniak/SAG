@@ -1,25 +1,25 @@
 package pl.sag
 
-import akka.actor.{Actor, ActorLogging}
+import akka.actor.{Actor, ActorLogging, Props}
+import akka.pattern.pipe
 
-import scala.util.Random
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class WorkerActor
+class WorkerActor(fetcher: ProductFetcher)
   extends Actor
     with ActorLogging
-    with TextProcessingUtils
-    with ProductFetcher {
+    with TextProcessingUtils {
 
-  private val model: Products = fetchProducts(100)
-
-  def randomProduct(i: Int): Product = {
-    Product(Random.alphanumeric.take(5).toString, ProductId(Random.nextInt), Random.alphanumeric.take(10).toString)
-  }
+  private val model: Future[Products] = fetcher.fetchProducts(200)
 
   override def receive: Receive = {
     case productsRequest: GetProductsRequest =>
-      sender() ! findMostSimilarProducts(model, productsRequest.product, productsRequest.resultAmount)
+      findMostSimilarProducts(model, productsRequest.product, productsRequest.resultAmount) pipeTo sender
     case _ => LogicError("Yo, here an Error :D")
   }
+}
 
+object WorkerActor {
+  def props(fetcher: ProductFetcher): Props = Props(new WorkerActor(fetcher))
 }

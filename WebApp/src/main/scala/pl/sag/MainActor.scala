@@ -5,6 +5,7 @@ import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Await, Future}
 import scala.concurrent.Future.sequence
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -18,21 +19,26 @@ class MainActor(val numberOfChildren: Int)
     with ActorLogging
     with TextProcessingUtils {
 
-  implicit val timeout: Timeout = Timeout(5 seconds)
+  val fetcher: ProductFetcher = new ProductFetcherImpl("database")
+
+  implicit val timeout: Timeout = Timeout(60 seconds)
 
   val workers: List[ActorRef] = (1 to numberOfChildren).toList.map(createActor)
 
-  def createActor(i: Int): ActorRef = context.actorOf(Props[WorkerActor], s"workerNo.$i")
+  def createActor(i: Int): ActorRef = context.actorOf(WorkerActor.props(fetcher), s"workerNo.$i")
 
   override def receive: Receive = {
     case productRequest: GetProductsRequest =>
       val products = workers.map(_ ? productRequest).map(_.map(_.asInstanceOf[Products]))
-      sequence(products).map(_.reduce(_ ++ _)).map { products =>
-        findMostSimilarProducts(products, productRequest.product, productRequest.resultAmount)
-      } pipeTo sender()
+
+      val resultProducts = sequence(products).map(_.reduce(_ ++ _)).flatMap { products =>
+        findMostSimilarProducts(Future.successful(products), productRequest.product, productRequest.resultAmount)
+      }
+
+      resultProducts pipeTo sender
 
     case KillAndDie =>
       workers foreach (_ ! PoisonPill)
-      context stop self
+      context.system.terminate pipeTo sender
   }
 }

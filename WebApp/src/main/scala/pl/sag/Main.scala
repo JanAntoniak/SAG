@@ -1,22 +1,35 @@
 package pl.sag
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorSystem, Terminated}
 import akka.pattern.ask
 import akka.util.Timeout
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-object Main {
-  def main(args: Array[String]): Unit = {
-    val system = ActorSystem("systemActor")
-    val mainActor = system.actorOf(MainActor.props(5), "mainActor")
-    implicit val timeout: Timeout = Timeout(5 seconds)
-    val productDto = ProductDTO("Product description")
-    val result = (mainActor ? GetProductsRequest(productDto, 100)).map(_.asInstanceOf[Products])
-    result map println
-    mainActor ! KillAndDie
-    system terminate
+class Main extends Logger {
+
+  private val system = ActorSystem("systemActor")
+  private val mainActor = system.actorOf(MainActor.props(50), "mainActor")
+  private implicit val timeout: Timeout = Timeout(60 seconds)
+
+  def findBestFittingProducts(productsRequest: GetProductsRequest): Future[ProductsResponse] = {
+    val result = (mainActor ? productsRequest).map(_.asInstanceOf[Products])
+    result.map { products =>
+      info(s"Returining products: $products")
+    }
+    result.map { products =>
+      ProductsResponse(products.products.map { product =>
+        ProductResponse(product._id.toString, product.image_url)
+      })
+    }
+  }
+
+  def cleanUp = {
+    for {
+      terminationResult <- (mainActor ? KillAndDie).map(_.asInstanceOf[Terminated])
+    } yield terminationResult
   }
 }

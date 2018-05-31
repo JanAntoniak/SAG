@@ -3,16 +3,22 @@ package pl.sag
 import breeze.linalg.DenseVector
 import breeze.linalg.functions.cosineDistance
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 trait TextProcessingUtils {
 
-  def findMostSimilarProducts(products: Products, product: ProductDTO, amount: Int): Products =
-    Products(
-      products.products.map(product =>
-        (product, countCosineDistance(product.productDescription, product.productDescription))
-      ).sortBy(_._2)
-        .take(amount)
-        .map(_._1)
-    )
+  def findMostSimilarProducts(futureProducts: Future[Products], product: ProductDTO, amount: Int): Future[Products] =
+    futureProducts.map { products =>
+      Products(
+        products.products.map(p =>
+          (p, countCosineDistance(p.simplified_description, product.productSimplifiedDescription))
+        ).sortBy(_._2)
+         .take(amount)
+         .map(_._1)
+      )
+    }
+
 
   private def countCosineDistance(text1: String, text2: String): Double = {
     val (arr1, arr2) = createWordsIncidenceVector(text1, text2)
