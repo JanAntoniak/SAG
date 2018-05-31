@@ -13,8 +13,8 @@ object Main {
     val system = ActorSystem("systemActor")
     val mainActor = system.actorOf(MainActor.props(5), "mainActor")
     implicit val timeout: Timeout = Timeout(5 seconds)
-    val product = Product("Product name", ProductId(1), "Product description")
-    val result = (mainActor ? GetProductsRequest(product, 100)).map(_.asInstanceOf[Products])
+    val productDto = ProductDTO("Product description")
+    val result = (mainActor ? GetProductsRequest(productDto, 100)).map(_.asInstanceOf[Products])
     result map println
     mainActor ! KillAndDie
     system terminate

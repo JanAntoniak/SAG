@@ -4,9 +4,10 @@ sealed trait Request
 sealed trait Response
 sealed trait Error extends Response
 
-case class GetProductsRequest(product: Product, resultAmount: Int) extends Request
+case class GetProductsRequest(product: ProductDTO, resultAmount: Int) extends Request
 case object KillAndDie extends Request
 
+case class ProductDTO(productDescription: String)
 case class Products(products: List[Product]) extends Response {
   def ++(other: Products) = Products(products ++ other.products)
 }
