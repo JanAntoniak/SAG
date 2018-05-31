@@ -15,7 +15,7 @@ object MainActor {
 
 class MainActor(val numberOfChildren: Int) extends Actor with ActorLogging {
 
-  implicit val timeout = Timeout(5 seconds)
+  implicit val timeout: Timeout = Timeout(5 seconds)
 
   val workers: List[ActorRef] = (1 to numberOfChildren).toList.map(createActor)
 
