@@ -13,7 +13,10 @@ object MainActor {
   def props(numberOfChildren: Int): Props = Props(new MainActor(numberOfChildren))
 }
 
-class MainActor(val numberOfChildren: Int) extends Actor with ActorLogging {
+class MainActor(val numberOfChildren: Int)
+  extends Actor
+    with ActorLogging
+    with TextProcessingUtils {
 
   implicit val timeout: Timeout = Timeout(5 seconds)
 
@@ -24,7 +27,10 @@ class MainActor(val numberOfChildren: Int) extends Actor with ActorLogging {
   override def receive: Receive = {
     case productRequest: GetProductsRequest =>
       val products = workers.map(_ ? productRequest).map(_.map(_.asInstanceOf[Products]))
-      sequence(products).map(_.reduce(_ ++ _)) pipeTo sender()
+      sequence(products).map(_.reduce(_ ++ _)).map { products =>
+        findMostSimilarProducts(products, productRequest.product, productRequest.resultAmount)
+      } pipeTo sender()
+
     case KillAndDie =>
       workers foreach (_ ! PoisonPill)
       context stop self
