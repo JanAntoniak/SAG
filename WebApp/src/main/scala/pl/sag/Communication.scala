@@ -17,12 +17,9 @@ case class LogicError(msg: String) extends Error
 
 case class ProductDTO(productSimplifiedDescription: String)
 
-final case class ProductsResponse(products: List[ProductResponse]) extends Response {
+final case class ProductsResponse(products: List[String]) extends Response {
   def ++(other: ProductsResponse) = ProductsResponse(products ++ other.products)
 }
-final case class ProductResponse(_id: String, url: String)
-
-
 
 object Product {
   def apply(name: String,

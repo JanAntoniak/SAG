@@ -12,7 +12,7 @@ import scala.language.postfixOps
 class Main extends Logger {
 
   private val system = ActorSystem("systemActor")
-  private val mainActor = system.actorOf(MainActor.props(50), "mainActor")
+  private val mainActor = system.actorOf(MainActor.props(20), "mainActor")
   private implicit val timeout: Timeout = Timeout(60 seconds)
 
   def findBestFittingProducts(productsRequest: GetProductsRequest): Future[ProductsResponse] = {
@@ -22,7 +22,7 @@ class Main extends Logger {
     }
     result.map { products =>
       ProductsResponse(products.products.map { product =>
-        ProductResponse(product._id.toString, product.imageURL)
+        product._id.toString
       })
     }
   }

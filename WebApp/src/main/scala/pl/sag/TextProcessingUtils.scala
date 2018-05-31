@@ -20,6 +20,7 @@ trait TextProcessingUtils {
       )
     }
 
+
   private def countCosineDistance(text1: String, text2: String): Double = {
     val (arr1, arr2) = createWordsIncidenceVector(text1, text2)
     cosineDistance(DenseVector(arr1), DenseVector(arr2))

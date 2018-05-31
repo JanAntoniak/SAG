@@ -11,7 +11,7 @@ class WorkerActor(fetcher: ProductFetcher)
     with ActorLogging
     with TextProcessingUtils {
 
-  private val model: Future[Products] = fetcher.fetchProducts(200)
+  private val model: Future[Products] = fetcher.fetchProducts(100)
 
   override def receive: Receive = {
     case productsRequest: GetProductsRequest =>

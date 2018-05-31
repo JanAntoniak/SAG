@@ -4,7 +4,6 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import spray.json.DefaultJsonProtocol
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val productResponse  = jsonFormat2(ProductResponse)
   implicit val productsResponse = jsonFormat1(ProductsResponse)
 
   implicit val productDTO = jsonFormat1(ProductDTO)
