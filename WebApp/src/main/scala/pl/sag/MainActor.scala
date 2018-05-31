@@ -29,11 +29,11 @@ class MainActor(val numberOfChildren: Int)
 
   override def receive: Receive = {
     case productRequest: GetProductsRequest =>
-      val products = workers.map(_ ? productRequest).map(_.map(_.asInstanceOf[Products]))
+      val products = workers.map(_ ? productRequest).map(_.map(_.asInstanceOf[ProductsWithCosDist]))
 
-      val resultProducts = sequence(products).map(_.reduce(_ ++ _)).flatMap { products =>
-        findMostSimilarProducts(Future.successful(products), productRequest.product, productRequest.resultAmount)
-      }
+      val resultProducts = sequence(products).map(_.reduce(_ ++ _)).map { products =>
+        products.products.sortBy(_.cosineDistance).take(productRequest.resultAmount)
+      }.map(ProductsWithCosDist)
 
       resultProducts pipeTo sender
 

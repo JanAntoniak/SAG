@@ -16,13 +16,13 @@ class Main extends Logger {
   private implicit val timeout: Timeout = Timeout(60 seconds)
 
   def findBestFittingProducts(productsRequest: GetProductsRequest): Future[ProductsResponse] = {
-    val result = (mainActor ? productsRequest).map(_.asInstanceOf[Products])
+    val result = (mainActor ? productsRequest).map(_.asInstanceOf[ProductsWithCosDist])
     result.map { products =>
       info(s"Returining products: $products")
     }
     result.map { products =>
       ProductsResponse(products.products.map { product =>
-        ProductResponse(product._id.toString, product.image_url)
+        ProductResponse(product._id.toString, product.imageURL)
       })
     }
   }

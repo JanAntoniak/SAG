@@ -8,17 +8,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait TextProcessingUtils {
 
-  def findMostSimilarProducts(futureProducts: Future[Products], product: ProductDTO, amount: Int): Future[Products] =
+  def findMostSimilarProducts(futureProducts: Future[Products], product: ProductDTO, amount: Int): Future[ProductsWithCosDist] =
     futureProducts.map { products =>
-      Products(
-        products.products.map(p =>
-          (p, countCosineDistance(p.simplified_description, product.productSimplifiedDescription))
-        ).sortBy(_._2)
-         .take(amount)
-         .map(_._1)
+      ProductsWithCosDist(
+        products.products.map(p => {
+          val cosDistVal = countCosineDistance(p.simplified_description, product.productSimplifiedDescription)
+          (ProductWithCosDist(p._id, p.image_url, cosDistVal), cosDistVal)
+        }).sortBy(_._2)
+          .take(amount)
+          .map(_._1)
       )
     }
-
 
   private def countCosineDistance(text1: String, text2: String): Double = {
     val (arr1, arr2) = createWordsIncidenceVector(text1, text2)
