@@ -1,0 +1,10 @@
+{% macro results_found(pages_list) %}
+
+{% for page in pages_list %}
+<div class="page-container well well-lg">
+    <img class="page-list-image" src="{{ page.image_url }}" align="left">
+    <h4><a class="title" href="product/{{ page._id }}">{{ page.name }}</a></h4>
+</div>
+{% endfor %}
+
+{% endmacro %}

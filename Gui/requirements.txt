@@ -1,0 +1,9 @@
+autologging
+bs4
+gunicorn
+requests
+flask
+flask_wtf
+wtforms
+bson
+pymongo
