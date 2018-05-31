@@ -6,3 +6,4 @@ venv/
 Gui/logs
 GearbestScraper/products_urls
 !**/.gitkeep
+__pycache__/*

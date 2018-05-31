@@ -2,6 +2,8 @@ import re
 
 from bson import ObjectId
 from pymongo import MongoClient
+import requests
+import json
 
 
 def get_product(product_id):
@@ -17,8 +19,18 @@ def get_list_of_products(query, page, num):
     return list(cursor)
 
 
+def prepareRequestData(simplified_description):
+    payload = {"product": {"productSimplifiedDescription": simplified_description}, "resultAmount": 5}
+    return json.dumps(payload)
+
+
 def get_offers(product):
-    return [product, product, product, product, product]
+    data = prepareRequestData(product['simplified_description'])
+    url = "http://localhost:8080"
+    headers = {'content-type': 'application/json'}
+    result = requests.post(url, data, headers=headers)
+    products_ids = result.json()['products']
+    return list(map(get_product, products_ids))
 
 
 def __get_products_collection():
