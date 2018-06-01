@@ -1,14 +1,15 @@
 package pl.sag
 
-import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Props}
+import akka.actor.SupervisorStrategy._
+import akka.actor.{Actor, ActorLogging, ActorRef, OneForOneStrategy, PoisonPill, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
 import scala.concurrent.Future.sequence
 import scala.concurrent.duration._
 import scala.language.postfixOps
+
 
 object MainActor {
   def props(numberOfChildren: Int): Props = Props(new MainActor(numberOfChildren))
@@ -29,7 +30,12 @@ class MainActor(val numberOfChildren: Int)
 
   override def receive: Receive = {
     case productRequest: GetProductsRequest =>
-      val products = workers.map(_ ? productRequest).map(_.map(_.asInstanceOf[ProductsWithCosDist]))
+      val products = workers.map(_ ? productRequest).map(_.map {
+        case prodWithCosVal: ProductsWithCosDist => prodWithCosVal
+        case ex =>
+          log.error(s"An error occured: $ex")
+          ProductsWithCosDist(List())
+      })
 
       val resultProducts = sequence(products).map(_.reduce(_ ++ _)).map { products =>
         products.products.sortBy(_.cosineDistance).take(productRequest.resultAmount)
@@ -41,4 +47,9 @@ class MainActor(val numberOfChildren: Int)
       workers foreach (_ ! PoisonPill)
       context.system.terminate pipeTo sender
   }
+
+  override val supervisorStrategy =
+    OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1 minute) {
+      case ex: Exception                => Restart
+    }
 }

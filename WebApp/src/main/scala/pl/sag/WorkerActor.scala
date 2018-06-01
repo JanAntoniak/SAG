@@ -6,6 +6,8 @@ import akka.pattern.pipe
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+import scala.math.random
+
 class WorkerActor(fetcher: ProductFetcher)
   extends Actor
     with ActorLogging
@@ -16,7 +18,9 @@ class WorkerActor(fetcher: ProductFetcher)
   override def receive: Receive = {
     case productsRequest: GetProductsRequest =>
       findMostSimilarProducts(model, productsRequest.product, productsRequest.resultAmount) pipeTo sender
-    case _ => LogicError("Yo, here an Error :D")
+    case ex =>
+      log.error(s"An error occured in $self: $ex")
+      sender ! Future.successful(LogicError(s"Error in $self: $ex"))
   }
 }
 
