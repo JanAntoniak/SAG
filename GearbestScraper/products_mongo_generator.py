@@ -16,16 +16,19 @@ nltk.download('stopwords')
 def generate_product_file(filename):
     html = get_product_html(filename)
 
-    product_description = get_product_description(html)
     product_name = get_product_name(html)
+    product_description = get_product_description(html)
+    product_simplified_description = get_simplified_description(product_description)
     product_image_url = get_product_image_url(html)
+    product_price = get_product_price(html)
 
-    if product_description and product_name and product_image_url:
+    if product_name and product_description and product_image_url and product_price:
         product = dict(
             name=product_name,
             description=product_description,
-            simplified_description=get_simplified_description(product_description),
-            image_url=product_image_url
+            simplified_description=product_simplified_description,
+            image_url=product_image_url,
+            price=product_price
         )
 
         connection = MongoClient()
@@ -57,6 +60,11 @@ def get_product_description(html):
 def get_product_image_url(html):
     image = html.find("img", "goodsIntro_largeImg")
     return image.get("src", default="") if image else ""
+
+
+def get_product_price(html):
+    image = html.find("span", "gbAsyncPrice goodsIntro_price js-currency js-panelIntroPrice")
+    return image.get("data-currency", default="") if image else ""
 
 
 def get_simplified_description(description):
