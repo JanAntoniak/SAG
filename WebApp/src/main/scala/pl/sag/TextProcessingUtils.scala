@@ -8,15 +8,18 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait TextProcessingUtils {
 
+  // paralleled finding the most similar products
   def findMostSimilarProducts(futureProducts: Future[Products], product: ProductDTO, amount: Int): Future[ProductsWithCosDist] =
     futureProducts.map { products =>
       ProductsWithCosDist(
-        products.products.map(p => {
+        products.products.par.map(p => {
           val cosDistVal = countCosineDistance(p.simplified_description, product.productSimplifiedDescription)
-          (ProductWithCosDist(p._id, p.image_url, cosDistVal), cosDistVal)
-        }).sortBy(_._2)
+          (ProductWithCosDist(p._id, cosDistVal), cosDistVal)
+        }).toList
+          .sortBy(_._2)
           .take(amount)
           .map(_._1)
+
       )
     }
 

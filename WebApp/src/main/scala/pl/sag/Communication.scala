@@ -29,10 +29,7 @@ object Product {
            ): Product =
     new Product(
       new ObjectId(),
-      name,
-      simplifiedDescription,
-      description,
-      imageURL)
+      simplifiedDescription)
 }
 object Products {
   def apply(products: Seq[Product]): Products = new Products(products.toList)
@@ -40,7 +37,7 @@ object Products {
 case class Products(products: List[Product]) {
   def ++(other: Products) = Products(products ++ other.products)
 }
-case class Product(_id: ObjectId, name: String, simplified_description: String, description: String, image_url: String)
+case class Product(_id: ObjectId, simplified_description: String)
 
 
 
@@ -48,4 +45,4 @@ case class Product(_id: ObjectId, name: String, simplified_description: String, 
 case class ProductsWithCosDist(products: List[ProductWithCosDist]) {
   def ++(other: ProductsWithCosDist) = ProductsWithCosDist(products ++ other.products)
 }
-case class ProductWithCosDist(_id: ObjectId, imageURL: String, cosineDistance: Double)
+case class ProductWithCosDist(_id: ObjectId, cosineDistance: Double)

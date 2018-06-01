@@ -12,7 +12,7 @@ import scala.language.postfixOps
 class Main extends Logger {
 
   private val system = ActorSystem("systemActor")
-  private val mainActor = system.actorOf(MainActor.props(20), "mainActor")
+  private val mainActor = system.actorOf(MainActor.props(4), "mainActor")
   private implicit val timeout: Timeout = Timeout(60 seconds)
 
   def findBestFittingProducts(productsRequest: GetProductsRequest): Future[ProductsResponse] = {
