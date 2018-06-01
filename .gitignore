@@ -3,7 +3,6 @@ project
 target
 GearbestScraper/html/
 venv/
-Gui/logs
+*.log
 GearbestScraper/products_urls
 !**/.gitkeep
-__pycache__/*
