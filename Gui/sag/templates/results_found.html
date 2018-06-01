@@ -1,9 +1,14 @@
 {% macro results_found(pages_list) %}
 
 {% for page in pages_list %}
-<div class="page-container well well-lg">
-    <img class="page-list-image" src="{{ page.image_url }}" align="left">
-    <h4><a class="title" href="product/{{ page._id }}">{{ page.name }}</a></h4>
+<div class="well well-lg">
+    <div class="row">
+        <div class="col-xs-2">
+            <a class="title" href="product/{{ page._id }}"><img class="product-image" src="{{ page.image_url }}"></a>
+        </div>
+        <div class="col-xs-8"><h4><a class="title" href="product/{{ page._id }}">{{ page.name }}</a></h4></div>
+        <div class="col-xs-2"><h4 style="text-align: center" class="alert-danger">{{ page.price }}$</h4></div>
+    </div>
 </div>
 {% endfor %}
 

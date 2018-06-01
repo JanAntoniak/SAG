@@ -19,13 +19,13 @@ def get_list_of_products(query, page, num):
     return list(cursor)
 
 
-def prepareRequestData(simplified_description):
+def prepare_request_data(simplified_description):
     payload = {"product": {"productSimplifiedDescription": simplified_description}, "resultAmount": 5}
     return json.dumps(payload)
 
 
 def get_offers(product):
-    data = prepareRequestData(product['simplified_description'])
+    data = prepare_request_data(product['simplified_description'])
     url = "http://localhost:8080"
     headers = {'content-type': 'application/json'}
     result = requests.post(url, data, headers=headers)

@@ -37,22 +37,8 @@ body {
     position: relative;
 }
 
-.page-container {
-    min-height: 150px;
-}
-
-.page-list-image {
-    height: 100px;
-    margin-right: 15px;
-}
-
 .product-image {
-    height: 250px;
-    margin-right: 15px;
-}
-
-.product-container {
-    min-height: 350px;
+    width: 100%;
 }
 
 .offers-container {
