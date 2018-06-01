@@ -38,7 +38,7 @@ class MainActor(val numberOfChildren: Int)
       })
 
       val resultProducts = sequence(products).map(_.reduce(_ ++ _)).map { products =>
-        products.products.sortBy(_.cosineDistance).take(productRequest.resultAmount)
+        products.products.distinct.sortBy(_.cosineDistance).take(productRequest.resultAmount)
       }.map(ProductsWithCosDist)
 
       resultProducts pipeTo sender
