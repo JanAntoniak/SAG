@@ -1,11 +1,13 @@
-package pl.sag
+package pl.sag.microservice.utils
 
+import _root_.pl.sag.microservice.{Product, Products}
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
-import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase}
 import org.mongodb.scala.model.Aggregates._
+import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

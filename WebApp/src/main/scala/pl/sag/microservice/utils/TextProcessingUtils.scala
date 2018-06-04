@@ -1,14 +1,14 @@
-package pl.sag
+package pl.sag.microservice.utils
 
 import breeze.linalg.DenseVector
 import breeze.linalg.functions.cosineDistance
+import pl.sag.microservice.{ProductDTO, ProductWithCosDist, Products, ProductsWithCosDist}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait TextProcessingUtils {
 
-  // paralleled finding the most similar products
   def findMostSimilarProducts(futureProducts: Future[Products], product: ProductDTO, amount: Int): Future[ProductsWithCosDist] =
     futureProducts.map { products =>
       ProductsWithCosDist(
@@ -22,7 +22,6 @@ trait TextProcessingUtils {
 
       )
     }
-
 
   private def countCosineDistance(text1: String, text2: String): Double = {
     val (arr1, arr2) = createWordsIncidenceVector(text1, text2)
