@@ -18,7 +18,6 @@ object HttpEndpointBoot extends Directives with JsonSupport {
 
   def main(args: Array[String]) {
 
-    println("\n\nOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n\n")
     implicit val system: ActorSystem = ActorSystem(name="sagWebApp", config=ConfigFactory.load("applicationSupervisor"))
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     implicit val executionContext: ExecutionContextExecutor = system.dispatcher
