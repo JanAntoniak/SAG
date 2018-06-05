@@ -21,11 +21,11 @@ class WorkerActor
     case productsRequest: GetProductsRequest =>
       log.info(s"$self got request: $productsRequest")
       Try {
-        import scala.math.random
-        if (random > 0.3)
+        //import scala.math.random
+        //if (random > 0.3)
           findMostSimilarProducts(model, productsRequest.product, productsRequest.resultAmount) pipeTo sender()
-        else
-          throw new NullPointerException
+        //else
+          //throw new NullPointerException
       }.recoverWith {
         case ex =>
           log.error(s"An error occurred: $ex in actor $self")
