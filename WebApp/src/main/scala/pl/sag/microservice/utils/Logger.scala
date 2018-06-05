@@ -1,4 +1,4 @@
-package pl.sag
+package pl.sag.microservice.utils
 
 import com.typesafe.scalalogging._
 import org.slf4j.LoggerFactory

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block base %}
+
+{{ search_bar(query) }}
+
+{% if results.status == 200 %}
+{{ results_found(results.pages_list) }}
+{{ pagination(page) }}
+{% else %}
+{% include "results_not_found.html" %}
+{% endif %}
+
+{% endblock %}

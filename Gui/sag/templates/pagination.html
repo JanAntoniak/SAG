@@ -1,0 +1,35 @@
+{% macro pagination(active_page) %}
+<div class="text-center">
+    <ul class="pagination">
+        {% if active_page == 1 %}
+        <li class="disabled"><span>«</span></li>
+        {% else %}
+        <li><a href="{{ url_for_other_page(active_page - 1) }}"><</a></li>
+        {% endif %}
+
+
+        {% set max_pages = 5 %}
+        {% if active_page < max_pages %}
+        {% set prev_first = 1 %}
+        {% set next_last = max_pages %}
+        {% else %}
+        {% set prev_first = active_page - 2 %}
+        {% set next_last = active_page + 2 %}
+        {% endif %}
+
+        {% for number in range(prev_first, active_page) %}
+        <li><a href="{{ url_for_other_page(number) }}">{{ number }}</a></li>
+        {% endfor %}
+
+        <li class="active"><span>{{ active_page }}</span></li>
+
+        {% for number in range(active_page + 1, next_last + 1) %}
+        <li><a href="{{ url_for_other_page(number) }}">{{ number }}</a></li>
+        {% endfor %}
+
+        <li><a href="{{ url_for_other_page(active_page + 1) }}">></a></li>
+    </ul>
+</div>
+{% endmacro %}
+
+<li class="active"><span>{{ active_page }}</span></li>

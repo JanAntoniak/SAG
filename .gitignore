@@ -1,4 +1,8 @@
 .idea
 project
 target
-
+GearbestScraper/html/
+venv/
+*.log
+GearbestScraper/products_urls
+!**/.gitkeep
