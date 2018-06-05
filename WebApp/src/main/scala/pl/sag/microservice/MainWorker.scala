@@ -37,7 +37,7 @@ class MainWorker extends Actor with ActorLogging {
 class ResultsAggregator(numberOfWorkers: Int, numberOfResults: Int, replyTo: ActorRef) extends Actor {
 
   private val results = mutable.ArrayBuffer[ProductsWithCosDist]()
-  context.setReceiveTimeout(20 seconds)
+  context.setReceiveTimeout(60 seconds)
 
   def receive: Receive = {
     case products: ProductsWithCosDist =>

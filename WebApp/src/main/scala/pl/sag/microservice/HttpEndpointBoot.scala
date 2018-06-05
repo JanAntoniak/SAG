@@ -21,13 +21,15 @@ object HttpEndpointBoot extends Directives with JsonSupport {
     implicit val system: ActorSystem = ActorSystem(name="sagWebApp", config=ConfigFactory.load("applicationSupervisor"))
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     implicit val executionContext: ExecutionContextExecutor = system.dispatcher
-    implicit val timeout: Timeout = 20 seconds
+    implicit val timeout: Timeout = 60 seconds
     val masterActor = ClientFactory.masterActor
     val route =
       post {
         path("") {
           entity(as[GetProductsRequest]) { requestBody =>
-            val products: Future[ProductsResponse] = (masterActor ? requestBody).map(_.asInstanceOf[ProductsResponse])
+            val products: Future[ProductsResponse] =
+              (masterActor ? requestBody).map(_.asInstanceOf[ProductsResponse])
+                .recover{ case ex: Throwable => ProductsResponse(Nil) }
             onComplete(products) { doneProducts =>
               complete(doneProducts)
             }
