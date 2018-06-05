@@ -7,14 +7,14 @@ import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
-import pl.sag.microservice.utils.JsonSupport
+import pl.sag.microservice.utils.{JsonSupport, Logger}
+
 import scala.concurrent.duration._
 import scala.language.postfixOps
-
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.io.StdIn
 
-object HttpEndpointBoot extends Directives with JsonSupport {
+object HttpEndpointBoot extends Directives with JsonSupport with Logger {
 
   def main(args: Array[String]) {
 
@@ -26,12 +26,16 @@ object HttpEndpointBoot extends Directives with JsonSupport {
     val route =
       post {
         path("") {
-          entity(as[GetProductsRequest]) { requestBody =>
-            val products: Future[ProductsResponse] =
-              (masterActor ? requestBody).map(_.asInstanceOf[ProductsResponse])
-                .recover{ case ex: Throwable => ProductsResponse(Nil) }
-            onComplete(products) { doneProducts =>
-              complete(doneProducts)
+          withRequestTimeout(60 seconds) {
+            entity(as[GetProductsRequest]) { requestBody =>
+              val products: Future[ProductsResponse] =
+                (masterActor ? requestBody).map(_.asInstanceOf[ProductsResponse])
+                  .recover { case ex: Throwable =>
+                    error(s"An error occurred: $ex")
+                    ProductsResponse(Nil) }
+              onComplete(products) { doneProducts =>
+                complete(doneProducts)
+              }
             }
           }
         }
