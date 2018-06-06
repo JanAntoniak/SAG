@@ -15,7 +15,7 @@ class WorkerActor
     with TextProcessingUtils {
 
   private lazy val model: Future[Products] =
-    Model.model.map(list => Products(scala.util.Random.shuffle(list.products).take(100)))
+    Model.model.map(list => Products(scala.util.Random.shuffle(list.products).take(200)))
 
   override def receive: Receive = {
     case productsRequest: GetProductsRequest =>
